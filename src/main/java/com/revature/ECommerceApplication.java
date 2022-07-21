@@ -1,0 +1,14 @@
+package com.revature;
+
+import org.hibernate.annotations.SQLInsert;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ECommerceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ECommerceApplication.class, args);
+    }
+
+}
