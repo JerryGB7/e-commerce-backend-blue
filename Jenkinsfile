@@ -7,10 +7,8 @@ pipeline {
   }
   stages {
         stage('Environment Test') {
-            steps{
-                sh 'echo "eksctl version $(eksctl version)"'
-                sh 'echo "docker version $(docker --version)"'
-                sh 'echo "kubectl version $(kubectl version --short --client)"'
+            steps {
+              sh 'echo "Test the env"'
                 
             }
         }
