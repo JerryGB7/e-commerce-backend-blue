@@ -1,8 +1,5 @@
 pipeline {
 
-  tools {
-    jdk 'Java'
-  }
   agent {
       kubernetes {
           inheritFrom 'maven'
