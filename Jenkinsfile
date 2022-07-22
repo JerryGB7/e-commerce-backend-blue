@@ -18,17 +18,16 @@ pipeline {
             }
         }
         stage('build image'){
+          steps {
+
+          }
             
 
 	      }
         stage('Push image to DockerHub'){
-            
-        }
-        stage('Deploy Image to AWS Eks cluster'){
-            
+          steps {
 
-	      }
-        stage('Deploy load balancer Service'){
+          }
             
         }
         stage("Cleaning up") {
