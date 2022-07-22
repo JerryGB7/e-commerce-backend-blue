@@ -5,8 +5,8 @@ pipeline {
     agent any
     environment {
     //Mohamed Account
-    registry=''
-    repo=''
+    registry='mshmsudd'
+    repo='backend-blue'
     DOCKERHUB_CREDENTIALS=credentials('DOCKER_AUTH_ID')
     DOCKERHUB_REPO='${registry}/${repo}'
     TAG="${BUILD_NUMBER}" 
