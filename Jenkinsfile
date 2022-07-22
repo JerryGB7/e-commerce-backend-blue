@@ -12,7 +12,8 @@ pipeline {
     TAG="${BUILD_NUMBER}" 
   } // environment
 
-   
+   stages {
+
     stage ('Build') {
           steps {
             sh 'mvn clean install'           
@@ -33,4 +34,7 @@ pipeline {
          }
      }
     }
+
+   }
+    
 }
