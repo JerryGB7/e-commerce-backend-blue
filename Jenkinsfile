@@ -1,40 +1,44 @@
 pipeline {
-   tools {
-        maven 'Maven3'
-    }
-    agent any
-    environment {
-    //Mohamed Account
-    registry='mshmsudd'
-    repo='backend-blue'
-    DOCKERHUB_CREDENTIALS=credentials('DOCKER_AUTH_ID')
-    DOCKERHUB_REPO='${registry}/${repo}'
-    TAG="${BUILD_NUMBER}" 
-  } // environment
 
-   stages {
-
-    stage ('Build') {
-          steps {
-            sh 'mvn clean install'           
+  tools {
+    jdk 'Java'
+  }
+  agent {
+      kubernetes {
+          inheritFrom 'maven'
+      }
+  }
+  stages {
+        stage('Environment Test') {
+            steps{
+                sh 'echo "eksctl version $(eksctl version)"'
+                sh 'echo "docker version $(docker --version)"'
+                sh 'echo "kubectl version $(kubectl version --short --client)"'
+                
             }
-      }
-    // Building Docker images
-    stage('Building image') {
-      steps{
-        script {
-          sh "docker build -t ${DOCKERHUB_REPO} ." 
         }
-      }
-    }
-    stage('Pushing to Docker Hub(Mohamed Account)') {
-     steps{  
-         script {
-                sh "docker push ${DOCKERHUB_REPO}"
-         }
-     }
-    }
+        stage('build image'){
+            
 
-   }
+	      }
+        stage('Push image to DockerHub'){
+            
+        }
+        stage('Deploy Image to AWS Eks cluster'){
+            
+
+	      }
+        stage('Deploy load balancer Service'){
+            
+        }
+        stage("Cleaning up") {
+            steps{
+                sh 'echo "Cleaning up..."'
+                sh 'docker system prune --force'
+            }
+        }
+        
+
+  }
     
 }
