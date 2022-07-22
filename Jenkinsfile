@@ -4,7 +4,7 @@ pipeline {
     }
     agent any
     environment {
-    #Mohamed Account
+    //Mohamed Account
     registry=''
     repo=''
     DOCKERHUB_CREDENTIALS=credentials('DOCKER_AUTH_ID')
