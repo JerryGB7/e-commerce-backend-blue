@@ -19,6 +19,8 @@ pipeline {
         }
         stage('build image'){
           steps {
+            sh 'echo " building blue app docker image"'
+            sh "chmod +x -R ${env.WORKSPACE}"
 
           }
             
@@ -26,6 +28,12 @@ pipeline {
 	      }
         stage('Push image to DockerHub'){
           steps {
+            steps {
+                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                    sh 'echo " push blueapp image to dockerhub"'
+                    
+                }
+            }
 
           }
             
