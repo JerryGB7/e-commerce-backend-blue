@@ -27,7 +27,6 @@ pipeline {
 
 	      }
         stage('Push image to DockerHub'){
-          steps {
             steps {
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                     sh 'echo " push blueapp image to dockerhub"'
@@ -35,7 +34,7 @@ pipeline {
                 }
             }
 
-          }
+          
             
         }
         stage("Cleaning up") {
