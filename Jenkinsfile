@@ -1,6 +1,10 @@
 pipeline {
 
-  agent any
+  agent {
+      kubernetes {
+          inheritFrom 'maven'
+      }
+  }
   stages {
         stage('Environment Test') {
             steps {
