@@ -1,10 +1,6 @@
 pipeline {
 
-  agent {
-      kubernetes {
-          inheritFrom 'default'
-      }
-  }
+  agent any
   stages {
         stage('Environment Test') {
             steps {
