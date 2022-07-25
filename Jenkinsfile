@@ -11,12 +11,12 @@ pipeline {
           stages {
                stage("build") {
                    steps {
-                       sh "echo "maven version $(mvn --version)""
+                       sh 'echo "maven version $(mvn --version)"'
                    }
                }
                stage("test") {
                    steps {
-                       sh "echo "maven version $(mvn --version)""
+                       sh 'echo "maven version $(mvn --version)"'
                    }
                }
           }
@@ -32,12 +32,12 @@ pipeline {
           stages {
                stage("build") {
                    steps {
-                       sh "echo "docker version $(docker --version)""
+                       sh 'echo "docker version $(docker --version)"'
                    }
                }
                stage("test") {
                    steps {
-                       sh "echo "docker version $(docker --version)""
+                       sh 'echo "docker version $(docker --version)"'
                    }
                }
           }
@@ -53,12 +53,12 @@ pipeline {
           stages {
                stage("build") {
                    steps {
-                       sh "echo "kubectl version $(kubectl version --short --client)""
+                       sh 'echo "kubectl version $(kubectl version --short --client)"'
                    }
                }
                stage("test") {
                    steps {
-                       sh "echo "kubectl version $(kubectl version --short --client)""
+                       sh 'echo "kubectl version $(kubectl version --short --client)"'
                    }
                }
           }
