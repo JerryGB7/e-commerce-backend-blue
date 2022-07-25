@@ -50,7 +50,7 @@ To download the image from docker, enter the command:
 in the directory of your choosing. Open with your Docker desktop and run as a containerized image.
 
 
-## Happy coding!
+## Happy coding!!
 
 ## Links
 https://www.how2shout.com/linux/how-to-install-sudo-on-debian-or-ubuntu-linux/
