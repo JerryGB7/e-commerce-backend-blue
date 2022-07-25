@@ -1,51 +1,70 @@
 pipeline {
-
-  agent {
-      kubernetes {
-          inheritFrom 'alpine'
-      }
-  }
+  agent none
+  
   stages {
-        stage('Environment Test') {
-            steps {
-              sh 'echo "Java version $(java --version)"'
-              sh 'echo "docker version $(docker --version)"'
-              // sh 'echo "eksctl version $(eksctl version)"'
-              // sh 'echo "kubectl version $(kubectl version --short --client)"'
-              // sh 'echo "Hadolint version $(hadolint --version)"'
-                
+        stage('Maven test') {
+          agent {
+            kubernetes {
+                inheritFrom 'maven'
             }
-        }
-        stage('build image'){
-          steps {
-            sh 'echo " building docker image"'
-            sh "chmod +x -R ${env.WORKSPACE}"
-            // sh "docker build -t mshmsudd/e-commerce ."
+          }
+          stages {
+               stage("build") {
+                   steps {
+                       sh "echo "maven version $(mvn --version)""
+                   }
+               }
+               stage("test") {
+                   steps {
+                       sh "echo "maven version $(mvn --version)""
+                   }
+               }
           }
             
+        }
 
-	      }
-        stage('Push image to DockerHub'){
-            steps {
-                
-                sh 'echo " push image to dockerhub"'
+        stage('Docker test') {
+          agent {
+            kubernetes {
+                inheritFrom 'docker'
             }
-
-          
+          }
+          stages {
+               stage("build") {
+                   steps {
+                       sh "echo "docker version $(docker --version)""
+                   }
+               }
+               stage("test") {
+                   steps {
+                       sh "echo "docker version $(docker --version)""
+                   }
+               }
+          }
             
         }
-        stage("Cleaning up") {
-            steps{
-                sh 'echo "Cleaning up..."'
-                
+
+        stage('kubectl test') {
+          agent {
+            kubernetes {
+                inheritFrom 'kubectl'
             }
+          }
+          stages {
+               stage("build") {
+                   steps {
+                       sh "echo "kubectl version $(kubectl version --short --client)""
+                   }
+               }
+               stage("test") {
+                   steps {
+                       sh "echo "kubectl version $(kubectl version --short --client)""
+                   }
+               }
+          }
+            
         }
       
-  }
-  post {
-        success {
-            discordSend description: "CI/CD Pipeline", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/993653688251977870/jBKI7wwzebBdfEymLf0hLoR3H3yYhPXuM56ZBrNEvydLeP8vzrhC2_-x2r4iHehACRmf"
-        }
   }
     
 }
