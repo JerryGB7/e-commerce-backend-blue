@@ -39,7 +39,7 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn --version'
-          sh 'ls'
+          sh 'mvn package'
         }
       }
     }
@@ -49,7 +49,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
             sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
-            // sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
+            sh 'docker push mshmsudd/e-commerce-backend-blue:latest'
           }
         }
       }
