@@ -49,7 +49,9 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
             sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
+            sh 'docker login -u othom -p Othomane001!'
             sh 'docker push mshmsudd/e-commerce-backend-blue:latest'
+            sh 'docker logout'
           }
         }
       }
