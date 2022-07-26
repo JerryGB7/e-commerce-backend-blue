@@ -11,23 +11,19 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: docker
-            image: docker:latest
+          - name: kubectl
+            image: bitnami/kubectl:latest
             command:
             - cat
             tty: true
-          - name: kubectl
-            image: bitnami/kubectl:latest
+          - name: docker
+            image: docker:latest
             command:
             - cat
             tty: true
             volumeMounts:
              - mountPath: /var/run/docker.sock
                name: docker-sock
-          volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             command:
@@ -39,6 +35,9 @@ pipeline {
               mountPath: /kaniko/.docker
           restartPolicy: Never
           volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
           - name: kaniko-secret
             secret:
                 secretName: dockercred
