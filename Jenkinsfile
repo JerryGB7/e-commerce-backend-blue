@@ -48,24 +48,17 @@ pipeline {
         }
       }
     }
-    stage('Build-Docker-Image') {
-      steps {
-        container('docker') {
-          sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
-        }
-      }
-    }
-    /**stage('Docker Build & Push') {
+    stage('Docker Build & Push') {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
-            sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
-            sh 'docker push mshmsudd/e-commerce-backend-blue:latest'
+            sh 'docker build --privileged -t mshmsudd/e-commerce-backend-blue:latest .'
+            sh 'docker push --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
         }
       }
-    }*/
+    }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
         container('kubectl') {
