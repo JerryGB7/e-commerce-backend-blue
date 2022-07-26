@@ -3,7 +3,12 @@ pipeline {
   
   stages {
         stage('java test') {
-          agent { label 'alpine' }
+          agent {
+            kubernetes {
+                inheritFrom 'docker'
+            }
+
+          }
           stages {
                stage("build") {
                    steps {
@@ -20,7 +25,12 @@ pipeline {
         }
 
         stage('Docker test') {
-          agent { label 'docker' }
+          agent {
+            kubernetes {
+                inheritFrom 'docker'
+            }
+
+          }
           stages {
                stage("build") {
                    steps {
@@ -37,7 +47,12 @@ pipeline {
         }
 
         stage('kubectl test') {
-          agent { label 'kubectl' }
+          agent {
+            kubernetes {
+                inheritFrom 'kubectl'
+            }
+
+          }
           stages {
                stage("build") {
                    steps {
