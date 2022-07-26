@@ -1,73 +1,68 @@
 pipeline {
-  agent none
-  
-  stages {
-        stage('java test') {
-          agent {
-            kubernetes {
-                inheritFrom 'docker'
-            }
-
-          }
-          stages {
-               stage("build") {
-                   steps {
-                       sh 'echo "java version $(java --version)"'
-                   }
-               }
-               stage("test") {
-                   steps {
-                       sh 'echo "java version $(java --version)"'
-                   }
-               }
-          }
-            
-        }
-
-        stage('Docker test') {
-          agent {
-            kubernetes {
-                inheritFrom 'docker'
-            }
-
-          }
-          stages {
-               stage("build") {
-                   steps {
-                       sh 'echo "docker version $(docker --version)"'
-                   }
-               }
-               stage("test") {
-                   steps {
-                       sh 'echo "docker version $(docker --version)"'
-                   }
-               }
-          }
-            
-        }
-
-        stage('kubectl test') {
-          agent {
-            kubernetes {
-                inheritFrom 'kubectl'
-            }
-
-          }
-          stages {
-               stage("build") {
-                   steps {
-                       sh 'echo "kubectl version $(kubectl version --short --client)"'
-                   }
-               }
-               stage("test") {
-                   steps {
-                       sh 'echo "kubectl version $(kubectl version --short --client)"'
-                   }
-               }
-          }
-            
-        }
-      
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: maven:alpine
+            command:
+            - cat
+            tty: true
+          - name: docker
+            image: docker:latest
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+             - mountPath: /var/run/docker.sock
+               name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock    
+        '''
+    }
   }
+  stages {  
+    stage('Build-Jar-file') {
+      steps {
+        container('maven') {
+          sh 'mvn package'
+        }
+      }
+    }
+    stage('Build-Docker-Image') {
+      steps {
+        container('docker') {
+          sh 'docker build -t mshmsudd/testing-image:latest .'
+        }
+      }
+    }
+    stage('Login-Into-Docker') {
+      steps {
+        container('docker') {
+          sh 'docker login -u <docker_username> -p <docker_password>'
+      }
+    }
+    }
+     stage('Push-Images-Docker-to-DockerHub') {
+      steps {
+        container('docker') {
+          sh 'docker push mshmsudd/testing-image:latest'
+      }
+    }
+     }
+  }
+    post {
+      always {
+        container('docker') {
+          sh 'docker logout'
+      }
+      }
+    }
+  
     
 }
