@@ -52,7 +52,7 @@ pipeline {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-            // sh 'docker version --privileged'
+            sh 'docker run -ti -v /var/run/docker.sock:/var/run/docker.sock docker'
             sh 'docker build -v /var/run/docker.sock:/var/run/docker.sock --privileged -t mshmsudd/e-commerce-backend-blue:latest .'
             sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
