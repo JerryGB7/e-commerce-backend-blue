@@ -27,7 +27,24 @@ pipeline {
           volumes:
           - name: docker-sock
             hostPath:
-              path: /var/run/docker.sock    
+              path: /var/run/docker.sock
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:debug
+            command:
+            - sleep
+            args:
+            - 9999999
+            volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+          restartPolicy: Never
+          volumes:
+          - name: kaniko-secret
+            secret:
+                secretName: dockercred
+                items:
+                - key: .dockerconfigjson
+                  path: config.json
         '''
     }
   }
@@ -48,17 +65,17 @@ pipeline {
         }
       }
     }
-    /**stage('Docker Build & Push') {
+    stage('Docker Build & Push') {
       steps {
-        container('docker') {
+        container('kaniko') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-            sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -ti docker'
-            sh 'docker build -v /var/run/docker.sock:/var/run/docker.sock --privileged -t mshmsudd/e-commerce-backend-blue:latest .'
-            sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
+            // sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -ti docker'
+            sh '/kaniko/executor --context `pwd` --destination  mshmsudd/e-commerce-backend-blue:latest'
+            // sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
         }
       }
-    }*/
+    }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
         container('kubectl') {
