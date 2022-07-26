@@ -37,21 +37,24 @@ pipeline {
     stage('Build-Docker-Image') {
       steps {
         container('docker') {
-          sh 'docker build -t mshmsudd/testing-image:latest .'
+          // sh 'docker build -t mshmsudd/testing-image:latest .'
+          sh 'docker version'
         }
       }
     }
     stage('Login-Into-Docker') {
       steps {
         container('docker') {
-          sh 'docker login -u <docker_username> -p <docker_password>'
+          // sh 'docker login -u <docker_username> -p <docker_password>'
+          sh 'docker version'
       }
     }
     }
      stage('Push-Images-Docker-to-DockerHub') {
       steps {
         container('docker') {
-          sh 'docker push mshmsudd/testing-image:latest'
+          //sh 'docker push mshmsudd/testing-image:latest'
+          sh 'docker version'
       }
     }
      }
@@ -59,7 +62,8 @@ pipeline {
     post {
       always {
         container('docker') {
-          sh 'docker logout'
+          //sh 'docker logout'
+          sh 'docker version'
       }
       }
     }
