@@ -16,6 +16,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+            - cat
+            tty: true
             volumeMounts:
              - mountPath: /var/run/docker.sock
                name: docker-sock
@@ -27,46 +32,51 @@ pipeline {
     }
   }
   stages {  
-    stage('Build-Jar-file') {
+    stage('Test') {
       steps {
         container('maven') {
           sh 'mvn --version'
+          sh 'ls'
         }
       }
     }
-    stage('Build-Docker-Image') {
+    stage('Build') {
       steps {
-        container('docker') {
-          // sh 'docker build -t mshmsudd/testing-image:latest .'
-          sh 'docker version'
+        container('maven') {
+          sh 'mvn --version'
+          sh 'ls'
         }
       }
     }
-    stage('Login-Into-Docker') {
+    stage('Docker Build & Push') {
       steps {
         container('docker') {
-          // sh 'docker login -u <docker_username> -p <docker_password>'
-          sh 'docker version'
+          withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+            sh 'docker version'
+            sh 'ls'
+            sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
+            sh 'docker push mshmsudd/e-commerce-backend-blue:latest'
+          }
+        }
       }
     }
-    }
-     stage('Push-Images-Docker-to-DockerHub') {
+    stage('Deploy Image to AWS EKS cluster') {
       steps {
-        container('docker') {
-          //sh 'docker push mshmsudd/testing-image:latest'
-          sh 'docker version'
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            sh 'kubectl version'
+            sh 'ls'
+            
+          }
+        }
       }
     }
-     }
+    
   }
-    post {
-      always {
-        container('docker') {
-          //sh 'docker logout'
-          sh 'docker version'
-      }
-      }
-    }
-  
+  post {
+        success {
+            discordSend description: "CI/CD Pipeline", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1001401336706895874/lkLUzH5kD1jEcBRIzNXw8gM2w97gtzxePk3OOqXCdLtejGzrCNNMOTUSCbgPf6fWpbVu"
+        }
+  }
     
 }
