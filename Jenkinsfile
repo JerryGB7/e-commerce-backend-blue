@@ -48,7 +48,7 @@ pipeline {
         }
       }
     }
-    stage('Docker Build & Push') {
+    /**stage('Docker Build & Push') {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -58,7 +58,7 @@ pipeline {
           }
         }
       }
-    }
+    }*/
     stage('Deploy Image to AWS EKS cluster') {
       steps {
         container('kubectl') {
