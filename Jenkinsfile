@@ -17,7 +17,7 @@ pipeline {
                }
                stage("test") {
                    steps {
-                       sh 'echo "maven version $(mvn --version)"'
+                       sh 'echo "java version $(java --version)"'
                    }
                }
           }
