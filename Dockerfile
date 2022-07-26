@@ -18,7 +18,7 @@ RUN mvn clean package # -Dmaven.test.skip=true
 #Distributable lightweight image for running the jar file
 FROM openjdk
 
-copy --from=MAVEN_BUILD_STAGE ./target/e-commerce-1.0.jar /workspace/e-commerce-1.0.jar
+COPY --from=MAVEN_BUILD_STAGE ./target/e-commerce-1.0.jar /workspace/e-commerce-1.0.jar
 
 WORKDIR /workspace
 
