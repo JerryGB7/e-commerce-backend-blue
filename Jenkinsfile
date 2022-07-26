@@ -53,7 +53,7 @@ pipeline {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
-            sh 'ls'
+            sh 'systemctl start docker'
             sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
             sh 'docker push mshmsudd/e-commerce-backend-blue:latest'
           }
