@@ -51,7 +51,7 @@ pipeline {
     stage('Docker Build & Push') {
       steps {
         container('docker') {
-          withCredentials([credentialsId: "dockerhub"]) {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
             sh 'ls'
             sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
