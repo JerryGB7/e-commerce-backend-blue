@@ -4,7 +4,6 @@ pipeline {
   stages {
         stage('java test') {
           agent { label 'alpine' }
-          }
           stages {
                stage("build") {
                    steps {
