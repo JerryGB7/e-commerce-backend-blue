@@ -5,7 +5,7 @@ pipeline {
         stage('Maven test') {
           agent {
             kubernetes {
-                inheritFrom 'alpine'
+                inheritFrom 'maven'
             }
           }
           stages {
