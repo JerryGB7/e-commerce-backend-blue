@@ -15,7 +15,6 @@ pipeline {
             image: docker:latest
             command:
             - cat
-            tty: true
           - name: kubectl
             image: bitnami/kubectl:latest
             command:
