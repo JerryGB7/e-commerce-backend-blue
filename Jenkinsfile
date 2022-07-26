@@ -15,7 +15,7 @@ pipeline {
             image: docker:latest
             command:
             - cat
-            tty: false
+            tty: true
           - name: kubectl
             image: bitnami/kubectl:latest
             command:
@@ -52,7 +52,7 @@ pipeline {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-            sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock docker'
+            sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -ti docker'
             sh 'docker build -v /var/run/docker.sock:/var/run/docker.sock --privileged -t mshmsudd/e-commerce-backend-blue:latest .'
             sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
