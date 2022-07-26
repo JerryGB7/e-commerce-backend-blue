@@ -30,7 +30,8 @@ pipeline {
     stage('Build-Jar-file') {
       steps {
         container('maven') {
-          sh 'mvn package'
+          sh 'mvn --version'
+          sh 'java --version'
         }
       }
     }
