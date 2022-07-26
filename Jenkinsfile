@@ -11,11 +11,6 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: kubectl
-            image: bitnami/kubectl:latest
-            command:
-            - cat
-            tty: true
           - name: docker
             image: docker:latest
             command:
@@ -53,13 +48,13 @@ pipeline {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
             sh 'docker version'
-            // sh '/kaniko/executor --context `pwd` --destination  mshmsudd/e-commerce-backend-blue:latest'
+            sh 'docker build -t mshmsudd/e-commerce-backend-blue:latest .'
             // sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
         }
       }
     }
-    stage('Deploy Image to AWS EKS cluster') {
+    /**stage('Deploy Image to AWS EKS cluster') {
       steps {
         container('kubectl') {
           // withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -69,7 +64,7 @@ pipeline {
           // }
         }
       }
-    }
+    }*/
     
   }
   post {
