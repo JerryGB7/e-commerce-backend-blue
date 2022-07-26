@@ -24,26 +24,10 @@ pipeline {
             volumeMounts:
              - mountPath: /var/run/docker.sock
                name: docker-sock
-          - name: kaniko
-            image: gcr.io/kaniko-project/executor:debug
-            command:
-            - sleep
-            args:
-            - 9999999
-            volumeMounts:
-            - name: kaniko-secret
-              mountPath: /kaniko/.docker
-          restartPolicy: Never
           volumes:
           - name: docker-sock
             hostPath:
               path: /var/run/docker.sock
-          - name: kaniko-secret
-            secret:
-                secretName: dockercred
-                items:
-                - key: .dockerconfigjson
-                  path: config.json
         '''
     }
   }
@@ -66,10 +50,10 @@ pipeline {
     }
     stage('Docker Build & Push') {
       steps {
-        container('kaniko') {
+        container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-            // sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -ti docker'
-            sh '/kaniko/executor --context `pwd` --destination  mshmsudd/e-commerce-backend-blue:latest'
+            sh 'docker version'
+            // sh '/kaniko/executor --context `pwd` --destination  mshmsudd/e-commerce-backend-blue:latest'
             // sh 'docker push -v /var/run/docker.sock:/var/run/docker.sock --privileged mshmsudd/e-commerce-backend-blue:latest'
           }
         }
