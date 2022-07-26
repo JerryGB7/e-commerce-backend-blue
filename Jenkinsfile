@@ -2,16 +2,16 @@ pipeline {
   agent none
   
   stages {
-        stage('Maven test') {
+        stage('java test') {
           agent {
             kubernetes {
-                inheritFrom 'maven-1'
+                inheritFrom 'alpine'
             }
           }
           stages {
                stage("build") {
                    steps {
-                       sh 'echo "maven version $(mvn --version)"'
+                       sh 'echo "java version $(java --version)"'
                    }
                }
                stage("test") {
