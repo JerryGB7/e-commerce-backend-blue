@@ -49,8 +49,7 @@ pipeline {
     stage('SonarCloud analysis') {
         steps {       
             script {
-                nodejs(nodeJSInstallationName: 'nodejs'){ 
-                    sh 'npm install'             
+                nodejs(nodeJSInstallationName: 'nodejs'){             
                     def scannerHome = tool 'sonar scanner';             
                     withSonarQubeEnv('SonarCloud') { 
                         sh "${scannerHome}/bin/sonar-scanner"
