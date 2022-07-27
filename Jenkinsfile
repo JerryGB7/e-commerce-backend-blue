@@ -60,8 +60,10 @@ pipeline {
     }
     stage('Quality gate') {
         steps {
-            if (waitForQualityGate() != 'OK') {
-                echo 'fail quality gate'
+            script {
+                if (waitForQualityGate() != 'OK') {
+                    echo 'fail quality gate'
+                }
             }
         }
     }
