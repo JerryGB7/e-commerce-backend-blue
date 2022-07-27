@@ -12,7 +12,7 @@ pipeline {
             - cat
             tty: true
           - name: kubectl
-            image: bitnami/kubectl
+            image: jenkinsci/jnlp-slave:alpine
             command:
             - cat
             tty: true
@@ -42,7 +42,7 @@ pipeline {
     stage('Build') {
       steps {
         container('maven') {
-          sh 'mvn package'
+          //sh 'mvn package'
         }
       }
     }
@@ -63,7 +63,7 @@ pipeline {
       steps {
         container('kubectl') {
           //withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-            sh 'kubectl version'
+            sh 'kubectl get pod'
             
           //}
         }
