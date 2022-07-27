@@ -52,7 +52,7 @@ pipeline {
                 // def scannerHome = tool 'sonar scanner';             
                 withSonarQubeEnv('SonarCloud') { 
                     container('maven') {
-                        sh 'mvn clean package sonar:sonar'
+                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                     }
                     // sh "${scannerHome}/bin/sonar-scanner"
                 }
