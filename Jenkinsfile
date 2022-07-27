@@ -49,8 +49,8 @@ pipeline {
     stage('SonarCloud analysis') {
         steps {       
             script {     
-                withSonarQubeEnv('SonarQube') { 
-                    sh 'mvn clean package sonar:sonar'
+                withSonarQubeEnv('SonarCloud') { 
+                    echo 'environment'
                 }
             }
         }
