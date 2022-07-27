@@ -48,6 +48,12 @@ pipeline {
     // }
     stage('SonarCloud analysis') {
         steps {       
+          //Exporting environment variables for maven
+            sh 'export MAVEN_HOME=/usr/share/maven'
+            sh 'export PATH=$PATH:$MAVEN_HOME/bin'
+            sh 'mvn --version'
+            sh 'mvn clean package'
+
             script {     
                 withSonarQubeEnv('SonarCloud') { 
                     echo 'environment'
