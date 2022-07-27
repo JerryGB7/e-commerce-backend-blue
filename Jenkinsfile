@@ -31,7 +31,6 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn --version'
-          sh 'java --version'
         }
       }
     }
