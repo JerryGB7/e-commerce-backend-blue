@@ -47,11 +47,16 @@ pipeline {
     //   }
     // }
     stage('SonarCloud analysis') {
-        def scannerHome = tool 'SonarScanner 4.0';         
-        withSonarQubeEnv('SonarQube') { 
-            sh "${scannerHome}/bin/sonar-scanner"
+        steps {
+            step { 
+                def scannerHome = tool 'SonarScanner 4.0'; 
+            }
+            step {
+                withSonarQubeEnv('SonarQube') { 
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
         }
-        
     }
     stage('Quality gate') {
         steps {
