@@ -12,7 +12,7 @@ pipeline {
             - cat
             tty: true
           - name: kubectl
-            image: jenkinsci/jnlp-slave:alpine
+            image: bitnami/kubectl
             command:
             - cat
             tty: true
@@ -61,13 +61,12 @@ pipeline {
     }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
-        
+        container('kubectl') {
           //withKubeConfig([credentialsId: 'aws-cred']) {
-            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
-            sh 'chmod u+x ./kubectl'  
-            sh './kubectl get pods'
+            sh 'docker run --rm --name kubectl bitnami/kubectl:latest version'
             
           //}
+        }
         
       }
     }
