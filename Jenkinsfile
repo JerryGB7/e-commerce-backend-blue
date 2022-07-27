@@ -48,10 +48,13 @@ pipeline {
     // }
     stage('SonarCloud analysis') {
         steps {       
-            script {  
-                def scannerHome = tool 'sonar scanner';             
-                withSonarQubeEnv('SonarCloud') { 
-                    sh "${scannerHome}/bin/sonar-scanner"
+            script {
+                nodejs(nodeJSInstallationName: 'nodejs'){ 
+                    sh 'npm install'             
+                    def scannerHome = tool 'sonar scanner';             
+                    withSonarQubeEnv('SonarCloud') { 
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
                 }
             }
         }
