@@ -61,12 +61,14 @@ pipeline {
     }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
-        container('kubectl') {
-          //withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-            sh 'kubectl get pod'
+        
+          withKubeConfig([credentialsId: 'aws-cred']) {
+            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+            sh 'chmod u+x ./kubectl'  
+            sh './kubectl get pods'
             
-          //}
-        }
+          }
+        
       }
     }
     
