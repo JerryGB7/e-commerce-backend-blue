@@ -61,14 +61,18 @@ pipeline {
     }
     stage('SonarCloud analysis') {
         steps {
-            withSonarQubeEnv('SonarQube') {
-                sh "./gradlew sonarqube"
+            withSonarQubeEnv('SonarCloud') {
+                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
             }
         }
     }
     stage('Quality gate') {
         steps {
-            waitForQualityGate abortPipeline: true
+            def qg = waitForQualityGate()
+
+            if (qg.status != 'OK') {
+                error 'QA failure'
+            }
         }
     }
     stage('Deploy Image to AWS EKS cluster') {
