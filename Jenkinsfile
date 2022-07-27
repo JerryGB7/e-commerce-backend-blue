@@ -60,7 +60,9 @@ pipeline {
     }
     stage('Quality gate') {
         steps {
-            waitForQualityGate abortPipeline: true
+            if (waitForQualityGate() != 'OK') {
+                echo 'fail quality gate'
+            }
         }
     }
     stage('Docker Build & Push') {
