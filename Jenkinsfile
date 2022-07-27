@@ -63,7 +63,7 @@ pipeline {
       steps {
         container('docker') {
           //withKubeConfig([credentialsId: 'aws-cred']) {
-            sh 'docker run --rm --name kubectl bitnami/kubectl:latest version'
+            sh 'docker run --rm --name kubectl bitnami/kubectl:latest get pod'
             
           //}
         }
