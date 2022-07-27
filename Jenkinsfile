@@ -11,8 +11,8 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: jenkin
-            image: jenkins/slave
+          - name: kubectl
+            image: bitnami/kubectl
             command:
             - cat
             tty: true
@@ -59,25 +59,17 @@ pipeline {
         }
       }
     }
-    /**stage('Deploy Image to AWS EKS cluster') {
+    stage('Deploy Image to AWS EKS cluster') {
       steps {
         //container('kubectl') {
           // withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'kubectl version'
-            sh 'ls'
             
           // }
         //}
       }
-    }*/
+    }
     
-  }
-  post {
-        success {
-          container('jenkin') {
-            discordSend description: "CI/CD Pipeline", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1001401336706895874/lkLUzH5kD1jEcBRIzNXw8gM2w97gtzxePk3OOqXCdLtejGzrCNNMOTUSCbgPf6fWpbVu"
-          }
-        }
   }
     
 }
