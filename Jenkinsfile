@@ -11,6 +11,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: jenkin
+            image: jenkins/slave
+            command:
+            - cat
+            tty: true
           - name: docker
             image: docker:latest
             command:
@@ -69,7 +74,9 @@ pipeline {
   }
   post {
         success {
+          container('jenkin') {
             discordSend description: "CI/CD Pipeline", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1001401336706895874/lkLUzH5kD1jEcBRIzNXw8gM2w97gtzxePk3OOqXCdLtejGzrCNNMOTUSCbgPf6fWpbVu"
+          }
         }
   }
     
