@@ -50,7 +50,7 @@ pipeline {
         steps {       
             script {     
                 withSonarQubeEnv('SonarQube') { 
-                    sh 'mvn clean package sonar:sonar'
+                    sh './gradlew sonarqube'
                 }
             }
         }
