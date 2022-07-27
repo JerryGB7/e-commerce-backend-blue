@@ -54,23 +54,30 @@ pipeline {
             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
             sh 'docker login -u ${username} -p ${password}'
             //sh 'docker push othom/e-commerce-backend-blue:latest'
-            sh 'docker logout'
+            //sh 'docker logout'
           }
         }
       }
     }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
-        //container('kubectl') {
+        container('docker') {
           //withKubeConfig([credentialsId: 'aws-cred']) {
             sh 'docker run --rm --name kubectl bitnami/kubectl:latest version'
             
           //}
-        //}
+        }
         
       }
     }
     
   }
+    post {
+        always {
+          container('docker') {
+            sh 'docker logout'
+          }
+        }
+    }
     
 }
