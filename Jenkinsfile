@@ -61,12 +61,12 @@ pipeline {
     }
     stage('Deploy Image to AWS EKS cluster') {
       steps {
-        //container('kubectl') {
-          // withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'kubectl version'
             
-          // }
-        //}
+          }
+        }
       }
     }
     
