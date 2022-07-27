@@ -39,12 +39,24 @@ pipeline {
         }
       }
     }
-    stage('Build') {
-      steps {
-        container('maven') {
-          //sh 'mvn package'
+    // stage('Build') {
+    //   steps {
+    //     container('maven') {
+    //       //sh 'mvn package'
+    //     }
+    //   }
+    // }
+    stage('SonarCloud analysis') {
+        steps {
+            withSonarQubeEnv('SonarQube') {
+                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+            }
         }
-      }
+    }
+    stage('Quality gate') {
+        steps {
+            waitForQualityGate abortPipeline: true
+        }
     }
     stage('Docker Build & Push') {
       steps {
@@ -58,19 +70,7 @@ pipeline {
           }
         }
       }
-    }
-    stage('SonarCloud analysis') {
-        steps {
-            withSonarQubeEnv('SonarQube') {
-                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
-            }
-        }
-    }
-    stage('Quality gate') {
-        steps {
-            waitForQualityGate abortPipeline: true
-        }
-    }
+    }    
     stage('Deploy Image to AWS EKS cluster') {
       steps {
         container('docker') {
