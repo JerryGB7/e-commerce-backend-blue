@@ -49,10 +49,8 @@ pipeline {
     stage('SonarCloud analysis') {
         steps {       
             script {     
-                def scannerHome = tool 'SonarScanner 4.0'; 
-            
                 withSonarQubeEnv('SonarQube') { 
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
         }
