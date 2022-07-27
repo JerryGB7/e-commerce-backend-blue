@@ -31,22 +31,30 @@ pipeline {
         '''
     }
   }
+  options {
+        skipStagesAfterUnstable()
+  }
   stages {  
-    stage('Test') {
+    stage('Build') {
       steps {
         container('maven') {
-          sh 'mvn --version'
+          sh 'mvn -B -DskipTests clean package'
         }
       }
     }
-    // stage('Build') {
-    //   steps {
-    //     container('maven') {
-    //       //sh 'mvn package'
-    //     }
-    //   }
-    // }
-    stage('SonarCloud analysis') {
+    stage('Test') {
+       steps {
+         container('maven') {
+           sh 'mvn test'
+         }
+       }
+       post {
+          always {
+              junit 'target/surefire-reports/*.xml' 
+          }
+      }
+    }
+    /**stage('SonarCloud analysis') {
         steps {       
             script {
                 // def scannerHome = tool 'sonar scanner';             
@@ -67,8 +75,8 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Docker Build & Push') {
+    }*/
+    stage('Deliver') {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -76,12 +84,11 @@ pipeline {
             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
             sh 'docker login -u ${username} -p ${password}'
             //sh 'docker push othom/e-commerce-backend-blue:latest'
-            //sh 'docker logout'
           }
         }
       }
-    }    
-    stage('Deploy Image to AWS EKS cluster') {
+    }
+    stage('Deploy') {
       steps {
         container('docker') {
           //withKubeConfig([credentialsId: 'aws-cred']) {
