@@ -31,14 +31,13 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn --version'
-          sh 'ls'
+          sh 'java --version'
         }
       }
     }
     stage('Build') {
       steps {
         container('maven') {
-          sh 'mvn --version'
           sh 'mvn package'
         }
       }
@@ -47,26 +46,26 @@ pipeline {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-            sh 'docker version'
-            sh 'docker build -t othom/e-commerce-backend-blue:latest .'
-            sh 'docker login -u othom -p Othomane001!'
-            sh 'docker push othom/e-commerce-backend-blue:latest'
+            //sh 'docker version'
+            //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
+            sh 'docker login -u username -p password'
+            //sh 'docker push othom/e-commerce-backend-blue:latest'
             sh 'docker logout'
           }
         }
       }
     }
-    /**stage('Deploy Image to AWS EKS cluster') {
+    stage('Deploy Image to AWS EKS cluster') {
       steps {
-        container('kubectl') {
+        //container('kubectl') {
           // withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'kubectl version'
             sh 'ls'
             
           // }
-        }
+        //}
       }
-    }*/
+    }
     
   }
   post {
