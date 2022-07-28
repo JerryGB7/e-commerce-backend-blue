@@ -47,7 +47,7 @@ pipeline {
         }
       }
     }
-    /**stage('SonarCloud analysis') {
+    stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
@@ -63,14 +63,15 @@ pipeline {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
-                  def qg = waitForQualityGate()
-                  if (qg.status != "SUCCESS") {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  }
+                  // def qg = waitForQualityGate()
+                  // if (qg.status != "SUCCESS") {
+                  //   error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                  // }
+                  waitForQualityGate abortPipeline: true
                 }
             }
         }
-    }*/
+    }
     stage('Deliver') {
        steps {
          container('docker') {
