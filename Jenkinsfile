@@ -64,8 +64,10 @@ pipeline {
     stage('Quality gate') {
         steps {
             script {
-                if (waitForQualityGate() != 'OK') {
-                    echo 'fail quality gate'
+                timeout(time: 1, unit: 'HOURS')
+                def qg = waitForQualityGate()
+                if (qg.status != 'OK') {
+                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
             }
         }
