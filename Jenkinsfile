@@ -32,21 +32,21 @@ pipeline {
     }
   }
   stages {  
-    stage('Test') {
+    stage('Build') {
       steps {
         container('maven') {
-          sh 'mvn --version'
+          sh 'mvn -B -DskipTests clean package'
         }
       }
     }
-    // stage('Build') {
-    //   steps {
-    //     container('maven') {
-    //       //sh 'mvn package'
-    //     }
-    //   }
-    // }
-    stage('SonarCloud analysis') {
+    stage('Test') {
+      steps {
+        container('maven') {
+          sh 'mvn test'
+        }
+      }
+    }
+    /**stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
@@ -72,8 +72,8 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Docker Build & Push') {
+    }*/
+    stage('Deliver') {
       steps {
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -86,7 +86,7 @@ pipeline {
         }
       }
     }    
-    stage('Deploy Image to AWS EKS cluster') {
+    stage('Deploy') {
       steps {
         container('kubectl') {
             sh 'kubectl get pods --all-namespaces'
