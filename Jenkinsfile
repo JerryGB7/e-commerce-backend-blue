@@ -80,7 +80,7 @@ pipeline {
             //sh 'docker version'
             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
             sh 'ls'
-            sh 'cd ./target'
+            sh 'cd target'
             sh 'ls'
             sh 'docker login -u ${username} -p ${password}'
             //sh 'docker push othom/e-commerce-backend-blue:latest'
