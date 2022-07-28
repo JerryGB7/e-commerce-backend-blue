@@ -49,12 +49,12 @@ pipeline {
     stage('SonarCloud analysis') {
         steps {       
             script {
-                // def scannerHome = tool 'sonar scanner';             
+                def scannerHome = tool 'sonar scanner';             
                 withSonarQubeEnv('SonarCloud') { 
-                    container('maven') {
-                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
-                    }
-                    // sh "${scannerHome}/bin/sonar-scanner"
+                    // container('maven') {
+                    //     sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                    // }
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
