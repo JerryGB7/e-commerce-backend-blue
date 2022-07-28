@@ -1,52 +1,52 @@
 pipeline {
-  // agent {
-  //   kubernetes {
-  //     yaml '''
-  //       apiVersion: v1
-  //       kind: Pod
-  //       spec:
-  //         containers:
-  //         - name: maven
-  //           image: maven:alpine
-  //           command:
-  //           - cat
-  //           tty: true
-  //         - name: kubectl
-  //           image: gcr.io/cloud-builders/kubectl
-  //           command:
-  //           - cat
-  //           tty: true
-  //         - name: docker
-  //           image: docker:latest
-  //           command:
-  //           - cat
-  //           tty: true
-  //           volumeMounts:
-  //            - mountPath: /var/run/docker.sock
-  //              name: docker-sock
-  //         volumes:
-  //         - name: docker-sock
-  //           hostPath:
-  //             path: /var/run/docker.sock
-  //       '''
-  //   }
-  agent any
-  // }
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: maven:alpine
+            command:
+            - cat
+            tty: true
+          - name: kubectl
+            image: gcr.io/cloud-builders/kubectl
+            command:
+            - cat
+            tty: true
+          - name: docker
+            image: docker:latest
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+             - mountPath: /var/run/docker.sock
+               name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        '''
+    }
+  
+  }
   stages {  
-  //   stage('Build') {
-  //     steps {
-  //       container('maven') {
-  //         sh 'mvn -B -DskipTests clean package'
-  //       }
-  //     }
-  //   }
-  //   stage('Test') {
-  //     steps {
-  //       container('maven') {
-  //         sh 'mvn test'
-  //       }
-  //     }
-  //   }
+    stage('Build') {
+      steps {
+        container('maven') {
+          sh 'mvn -B -DskipTests clean package'
+        }
+      }
+    }
+    stage('Test') {
+      steps {
+        container('maven') {
+          sh 'mvn test'
+        }
+      }
+    }
     stage('SonarCloud analysis') {
         steps {       
             script {
