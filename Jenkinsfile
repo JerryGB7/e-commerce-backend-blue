@@ -47,21 +47,13 @@ pipeline {
   //       }
   //     }
   //   }
-    stage('Git repo') {
-      steps {
-        git 'https://github.com/2206-devops-batch/e-commerce-backend-blue.git'
-      }      
-    }
     stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
                   def scannerHome = tool 'sonar scanner';             
                   withSonarQubeEnv('SonarCloud') { 
-                    // container('maven') {
-                    //     sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
-                    // }
-                      sh "${scannerHome}/bin/sonar-scanner"
+                    sh "${scannerHome}/bin/sonar-scanner"
                   }
                 }
             }
