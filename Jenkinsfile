@@ -93,9 +93,7 @@ pipeline {
     stage('Deploy') {
       steps {
         container('kubectl') {
-            sh 'kubectl get pods --all-namespaces'
-            
-          }
+            sh 'kubectl get pods --all-namespaces'          
         }
         
       }
