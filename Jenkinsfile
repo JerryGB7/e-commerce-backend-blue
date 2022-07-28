@@ -47,7 +47,7 @@ pipeline {
         }
       }
     }
-    stage('SonarCloud analysis') {
+    /**stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
@@ -70,40 +70,40 @@ pipeline {
                 }
             }
         }
-    }
-    // stage('Deliver') {
-    //   steps {
-    //     container('docker') {
-    //       withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-    //         //sh 'docker version'
-    //         //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
-    //         sh 'ls'
-    //         dir("target") {
-    //           sh "ls"
-    //         }
-    //         sh 'docker login -u ${username} -p ${password}'
-    //         //sh 'docker push othom/e-commerce-backend-blue:latest'
-    //         //sh 'docker logout'
-    //       }
-    //     }
-    //   }
-    // }    
-    // stage('Deploy') {
-    //   steps {
-    //     container('kubectl') {
-    //         sh 'kubectl get pods --all-namespaces'          
-    //     }
+    }*/
+    stage('Deliver') {
+       steps {
+         container('docker') {
+           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+             //sh 'docker version'
+             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
+             sh 'ls'
+             dir("target") {
+               sh "ls"
+            }
+             sh 'docker login -u ${username} -p ${password}'
+             //sh 'docker push othom/e-commerce-backend-blue:latest'
+             //sh 'docker logout'
+          }
+        }
+      }
+    }    
+    stage('Deploy') {
+      steps {
+         container('kubectl') {
+             sh 'kubectl get pods --all-namespaces'          
+         }
         
-    //   }
-    // }
+      }
+    }
     
   }
-    // post {
-    //     always {
-    //       container('docker') {
-    //         sh 'docker logout'
-    //       }
-    //     }
-    // }    
+  post {
+      always {
+        container('docker') {
+          sh 'docker logout'
+        }
+      }
+  }    
     
 }
