@@ -95,7 +95,7 @@ pipeline {
         container('kubectl') {
             sh 'kubectl get pods --all-namespaces'
             
-          //}
+          }
         }
         
       }
