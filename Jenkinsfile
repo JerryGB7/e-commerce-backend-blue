@@ -12,7 +12,7 @@ pipeline {
             - cat
             tty: true
           - name: kubectl
-            image: bitnami/kubectl
+            image: gcr.io/cloud-builders/kubectl
             command:
             - cat
             tty: true
@@ -86,11 +86,9 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        container('docker') {
-          //withKubeConfig([credentialsId: 'aws-cred']) {
-            sh 'docker run --rm --name kubectl bitnami/kubectl:latest get pod'
+        container('kubectl') {
+            sh 'kubectl get pods --all-namespaces'
             
-          //}
         }
         
       }
