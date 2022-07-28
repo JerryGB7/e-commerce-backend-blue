@@ -46,7 +46,7 @@ pipeline {
         }
       }
     }
-    /**stage('SonarCloud analysis') {
+    stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
@@ -72,7 +72,7 @@ pipeline {
                 }
             }
         }
-    }*/
+    }
     stage('Deliver') {
       steps {
         container('docker') {
@@ -91,6 +91,7 @@ pipeline {
         container('kubectl') {
             sh 'kubectl get pods --all-namespaces'
             
+          //}
         }
         
       }
@@ -103,6 +104,6 @@ pipeline {
             sh 'docker logout'
           }
         }
-    }
+    }    
     
 }
