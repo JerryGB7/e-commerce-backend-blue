@@ -30,9 +30,9 @@ pipeline {
   //             path: /var/run/docker.sock
   //       '''
   //   }
-    agent any
+  agent any
   // }
-  // stages {  
+  stages {  
   //   stage('Build') {
   //     steps {
   //       container('maven') {
@@ -105,7 +105,7 @@ pipeline {
     //   }
     // }
     
-  //}
+  }
     // post {
     //     always {
     //       container('docker') {
