@@ -29,11 +29,10 @@ pipeline {
             hostPath:
               path: /var/run/docker.sock
         '''
-    }
-  
+    }  
   }
   stages {  
-    stage('Build') {
+    /*stage('Build') {
       steps {
         container('maven') {
           sh 'mvn install'
@@ -46,7 +45,7 @@ pipeline {
           sh 'mvn test'
         }
       }
-    }
+    }*/
     stage('SonarCloud analysis') {
         steps {       
             script {
@@ -59,20 +58,16 @@ pipeline {
             }
         }
     }
-    /*stage('Quality gate') {
+    stage('Quality gate') {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
-                  // def qg = waitForQualityGate()
-                  // if (qg.status != "SUCCESS") {
-                  //   error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  // }
                   waitForQualityGate abortPipeline: true
                 }
             }
         }
-    }*/
-    stage('Deliver') {
+    }
+    /*stage('Deliver') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -96,15 +91,15 @@ pipeline {
          }
         
       }
-    }
+    }*/
     
   }
-  post {
+  /*post {
       always {
         container('docker') {
           sh 'docker logout'
         }
       }
-  }    
+  }*/    
     
 }
