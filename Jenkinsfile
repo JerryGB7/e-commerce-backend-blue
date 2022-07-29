@@ -29,8 +29,7 @@ pipeline {
             hostPath:
               path: /var/run/docker.sock
         '''
-    }
-  
+    }  
   }
   stages {
     stage('SonarCloud analysis') {
@@ -54,10 +53,10 @@ pipeline {
             }
         }
     }
-    stage('Build') {
+    /*stage('Build') {
       steps {
         container('maven') {
-          sh 'mvn -B -DskipTests clean package'
+          sh 'mvn install'
         }
       }
     }
@@ -84,7 +83,7 @@ pipeline {
           }
         }
       }
-    }    
+    } */   
     stage('Deploy') {
       steps {
          container('kubectl') {
