@@ -32,21 +32,7 @@ pipeline {
     }
   
   }
-  stages {  
-    stage('Build') {
-      steps {
-        container('maven') {
-          sh 'mvn -B -DskipTests clean package'
-        }
-      }
-    }
-    stage('Test') {
-      steps {
-        container('maven') {
-          sh 'mvn test'
-        }
-      }
-    }
+  stages {
     stage('SonarCloud analysis') {
         steps {       
             script {
@@ -63,14 +49,24 @@ pipeline {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
-                  // def qg = waitForQualityGate()
-                  // if (qg.status != "SUCCESS") {
-                  //   error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  // }
                   waitForQualityGate abortPipeline: true
                 }
             }
         }
+    }
+    stage('Build') {
+      steps {
+        container('maven') {
+          sh 'mvn -B -DskipTests clean package'
+        }
+      }
+    }
+    stage('Test') {
+      steps {
+        container('maven') {
+          sh 'mvn test'
+        }
+      }
     }
     stage('Deliver') {
        steps {
