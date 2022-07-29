@@ -32,7 +32,7 @@ pipeline {
     }  
   }
   stages {  
-    stage('Build') {
+    /*stage('Build') {
       steps {
         container('maven') {
           sh 'mvn install'
@@ -45,7 +45,7 @@ pipeline {
           sh 'mvn test'
         }
       }
-    }
+    }*/
     stage('SonarCloud analysis') {
         steps {       
             script {
@@ -58,7 +58,7 @@ pipeline {
             }
         }
     }
-    /*stage('Quality gate') {
+    stage('Quality gate') {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
@@ -66,8 +66,8 @@ pipeline {
                 }
             }
         }
-    }*/
-    stage('Deliver') {
+    }
+    /*stage('Deliver') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -91,7 +91,7 @@ pipeline {
          }
         
       }
-    }
+    }*/
     
   }
   /*post {
