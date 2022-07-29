@@ -31,7 +31,25 @@ pipeline {
         '''
     }  
   }
+<<<<<<< HEAD
   stages {
+=======
+  stages {  
+    stage('Build') {
+      steps {
+        container('maven') {
+          sh 'mvn install'
+        }
+      }
+    }
+    stage('Test') {
+      steps {
+        container('maven') {
+          sh 'mvn test'
+        }
+      }
+    }
+>>>>>>> de2a897cd2b290d301ba422c6c8a2427cb59c2a1
     stage('SonarCloud analysis') {
         steps {       
             script {
@@ -44,7 +62,7 @@ pipeline {
             }
         }
     }
-    stage('Quality gate') {
+    /*stage('Quality gate') {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
@@ -52,6 +70,7 @@ pipeline {
                 }
             }
         }
+<<<<<<< HEAD
     }
     /*stage('Build') {
       steps {
@@ -67,19 +86,22 @@ pipeline {
         }
       }
     }
+=======
+    }*/
+>>>>>>> de2a897cd2b290d301ba422c6c8a2427cb59c2a1
     stage('Deliver') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
              //sh 'docker version'
-             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
+             sh 'docker build -t othom/e-commerce-backend-blue:latest .'
              sh 'ls'
              dir("target") {
                sh "ls"
             }
              sh 'docker login -u ${username} -p ${password}'
-             //sh 'docker push othom/e-commerce-backend-blue:latest'
-             //sh 'docker logout'
+             sh 'docker push othom/e-commerce-backend-blue:latest'
+             sh 'docker logout'
           }
         }
       }
