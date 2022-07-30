@@ -41,7 +41,6 @@ pipeline {
       steps {
         container('trivy') {
           sh "trivy repo https://github.com/2206-devops-batch/e-commerce-backend-blue"
-          recordIssues(tools: [trivy(pattern: 'results.json')])
         }
       }
     }  
@@ -93,7 +92,6 @@ pipeline {
       steps {
         container('trivy') {
           sh "trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER"
-          //recordIssues(tools: [trivy(pattern: 'results.json')])
         }
       }
     } 
