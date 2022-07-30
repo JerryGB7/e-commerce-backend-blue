@@ -11,8 +11,16 @@ ARG DB_PLATFORM=org.hibernate.dialect.H2Dialect
 ARG DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
 ARG DB_DRIVER=org.h2.Driver
 
+ENV DB_PLATFORM=org.hibernate.dialect.H2Dialect
+ENV DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
+ENV DB_DRIVER=org.h2.Driver
+
 # cleans the project and makes the shaded jar
-RUN mvn clean package -Dmaven.test.skip=true
+<<<<<<< HEAD
+#RUN mvn clean package -Dmaven.test.skip=true
+=======
+#RUN mvn clean package -Dmaven.test.skip=true
+>>>>>>> 132e8a06d293e7ab5fb049338c3ee6b6366b3c65
 
 
 #Distributable lightweight image for running the jar file

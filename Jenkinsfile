@@ -29,11 +29,10 @@ pipeline {
             hostPath:
               path: /var/run/docker.sock
         '''
-    }
-  
+    }  
   }
   stages {  
-    stage('Build') {
+    /*stage('Build') {
       steps {
         container('maven') {
           sh 'mvn install'
@@ -46,8 +45,8 @@ pipeline {
           sh 'mvn test'
         }
       }
-    }
-    /**stage('SonarCloud analysis') {
+    }*/
+    stage('SonarCloud analysis') {
         steps {       
             script {
                 nodejs(nodeJSInstallationName: 'nodejs'){ 
@@ -63,27 +62,24 @@ pipeline {
         steps {
             script {
                 timeout(time: 5, unit: 'MINUTES') {
-                  def qg = waitForQualityGate()
-                  if (qg.status != "SUCCESS") {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  }
+                  waitForQualityGate abortPipeline: true
                 }
             }
         }
-    }*/
-    stage('Deliver') {
+    }
+    /*stage('Deliver') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
              //sh 'docker version'
-             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
+             sh 'docker build -t othom/e-commerce-backend-blue:latest .'
              sh 'ls'
              dir("target") {
                sh "ls"
             }
              sh 'docker login -u ${username} -p ${password}'
-             //sh 'docker push othom/e-commerce-backend-blue:latest'
-             //sh 'docker logout'
+             sh 'docker push othom/e-commerce-backend-blue:latest'
+             sh 'docker logout'
           }
         }
       }
@@ -95,15 +91,15 @@ pipeline {
          }
         
       }
-    }
+    }*/
     
   }
-  post {
+  /*post {
       always {
         container('docker') {
           sh 'docker logout'
         }
       }
-  }    
+  }*/    
     
 }
