@@ -11,9 +11,9 @@ ARG DB_PLATFORM=org.hibernate.dialect.H2Dialect
 ARG DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
 ARG DB_DRIVER=org.h2.Driver
 
-ENV DB_PLATFORM=org.hibernate.dialect.H2Dialect
-ENV DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
-ENV DB_DRIVER=org.h2.Driver
+#ENV DB_PLATFORM=org.hibernate.dialect.H2Dialect
+#ENV DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
+#ENV DB_DRIVER=org.h2.Driver
 
 # cleans the project and makes the shaded jar
 #RUN mvn clean package -Dmaven.test.skip=true
@@ -21,6 +21,10 @@ ENV DB_DRIVER=org.h2.Driver
 
 #Distributable lightweight image for running the jar file
 FROM openjdk
+
+ENV DB_PLATFORM=org.hibernate.dialect.H2Dialect
+ENV DB_URL=jdbc:h2:mem:test;MODE=PostgreSQL
+ENV DB_DRIVER=org.h2.Driver
 
 COPY --from=MAVEN_BUILD_STAGE ./target/e-commerce-1.0.jar /workspace/e-commerce-1.0.jar
 
