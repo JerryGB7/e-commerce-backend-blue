@@ -37,11 +37,11 @@ pipeline {
     }  
   }
   stages {
-    stage('scan with trivy: Git repo') {
+    stage('Trivy Scan: git') {
       steps {
         container('trivy') {
           sh "trivy repo https://github.com/2206-devops-batch/e-commerce-backend-blue"
-          //recordIssues(tools: [trivy(pattern: 'results.json')])
+          recordIssues(tools: [trivy(pattern: 'results.json')])
         }
       }
     }  
@@ -80,11 +80,28 @@ pipeline {
             }
         }
     } 
-    stage('Deliver') {
+    stage('Build Image') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
              sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
+          }
+        }
+      }
+    }
+    stage('Trivy Scan: image') {
+      steps {
+        container('trivy') {
+          sh "trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER"
+          //recordIssues(tools: [trivy(pattern: 'results.json')])
+        }
+      }
+    } 
+    stage('Deliver') {
+       steps {
+         container('docker') {
+           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+             //sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
              sh 'docker login -u ${username} -p ${password}'
              sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
           }
