@@ -16,6 +16,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: trivy
+            image: aquasec/trivy:0.21.1
+            command:
+            - cat
+            tty: true
           - name: docker
             image: docker:latest
             command:
@@ -31,7 +36,15 @@ pipeline {
         '''
     }  
   }
-  stages {  
+  stages {
+    stage('scan with trivy: Git repo') {
+      steps {
+        container('trivy') {
+          sh "trivy repo https://github.com/2206-devops-batch/e-commerce-backend-blue"
+          //recordIssues(tools: [trivy(pattern: 'results.json')])
+        }
+      }
+    }  
     stage('Build') {
       steps {
         container('maven') {
@@ -72,7 +85,6 @@ pipeline {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
              sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
-             sh 'docker run aquasec/trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER'
              sh 'docker login -u ${username} -p ${password}'
              sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
           }
