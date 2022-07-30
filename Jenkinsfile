@@ -67,19 +67,22 @@ pipeline {
             }
         }
     }
+    stage('Docker Build') {
+       steps {
+         container('docker') {
+           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+             sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
+          }
+        }
+      }
+    }  
     stage('Deliver') {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-             //sh 'docker version'
-             //sh 'docker build -t othom/e-commerce-backend-blue:latest .'
-             sh 'ls'
-             dir("target") {
-               sh "ls"
-            }
+             //sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
              sh 'docker login -u ${username} -p ${password}'
-             //sh 'docker push othom/e-commerce-backend-blue:latest'
-             sh 'docker logout'
+             sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
           }
         }
       }
