@@ -90,8 +90,8 @@ pipeline {
     }
     stage('Trivy Scan: image') {
       steps {
-        container('trivy') {
-          sh "trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER"
+        container('docker') {
+          sh "docker run aquasec/trivy:0.21.1 image othom/e-commerce-backend-blue:$BUILD_NUMBER"
         }
       }
     } 
@@ -100,7 +100,7 @@ pipeline {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
              //sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
-             sh 'docker login -u ${username} -p ${password}'
+            sh 'docker login -u ${username} -p ${password}'
              sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
           }
         }
