@@ -21,6 +21,9 @@ pipeline {
             command:
             - cat
             tty: true
+            volumeMounts:
+             - mountPath: /var/run/docker.sock
+               name: docker-sock
           - name: docker
             image: docker:latest
             command:
@@ -51,7 +54,7 @@ pipeline {
         }
       }
     }
-    stage('Test') {
+    /**stage('Test') {
       steps {
         container('maven') {
           sh 'mvn test'
@@ -78,7 +81,7 @@ pipeline {
                 }
             }
         }
-    } 
+    } */
     stage('Build Image') {
        steps {
          container('docker') {
@@ -90,8 +93,8 @@ pipeline {
     }
     stage('Trivy Scan: image') {
       steps {
-        container('docker') {
-          sh "docker run aquasec/trivy:0.21.1 image othom/e-commerce-backend-blue:$BUILD_NUMBER"
+        container('trivy') {
+          sh "trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER"
         }
       }
     } 
