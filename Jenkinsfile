@@ -102,13 +102,19 @@ pipeline {
        steps {
          container('docker') {
            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-             //sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
-            sh 'docker login -u ${username} -p ${password}'
+             sh 'docker login -u ${username} -p ${password}'
              sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
           }
         }
       }
-    }    
+    }
+    stage('Trivy Scan: Misconfigurations') {
+      steps {
+        container('trivy') {
+          sh "trivy config ./kubectl yaml files"
+        }
+      }
+    }   
     stage('Deploy') {
       steps {
          container('kubectl') {
