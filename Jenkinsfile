@@ -111,7 +111,7 @@ pipeline {
     stage('Trivy Scan: Misconfigurations') {
       steps {
         container('trivy') {
-          sh "trivy config ./kubectl yaml files"
+          sh "trivy config ./kubectl-yaml-files"
         }
       }
     }   
