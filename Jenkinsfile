@@ -121,7 +121,9 @@ pipeline {
     stage('Deploy') {
       steps {
          container('kubectl') {
-             sh 'kubectl get pods --all-namespaces'          
+             sh 'kubectl apply -f backendbluedeployment.yaml'
+             sh 'kubectl apply -f backendgreendeployment.yaml'
+           
          }
         
       }
