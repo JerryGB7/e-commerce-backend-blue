@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-blue
+  labels:
+    app: backend-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-blue
+  template:
+    metadata:
+      labels:
+        app: backend-blue
+    spec:
+      containers:
+      - name: backend-blue
+        image: othom/e-commerce-backend-blue:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
