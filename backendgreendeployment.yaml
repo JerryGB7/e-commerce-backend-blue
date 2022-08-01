@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-green
+  labels:
+    app: backend-green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-green
+  template:
+    metadata:
+      labels:
+        app: backend-green
+    spec:
+      containers:
+      - name: backend-green
+        image: othom/e-commerce-backend-green:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        
