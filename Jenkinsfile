@@ -121,6 +121,7 @@ pipeline {
     stage('Deploy') {
       steps {
          container('kubectl') {
+             sh 'kubectl config set-context --current --namespace=default'
              sh 'kubectl apply -f backendbluedeployment.yaml'
              sh 'kubectl apply -f backendgreendeployment.yaml'
            
