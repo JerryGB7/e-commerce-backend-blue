@@ -52,14 +52,5 @@ pipeline {
         }
       }
     }
-    stage('SonarQube analysis') {
-        steps{
-          withSonarQubeEnv('sonarqube-8.9.9') { 
-          // If you have configured more than one global server connection, you can specify its name
-          sh "mvn sonar:sonar"
-          }
-        }
-    }
-    
   }
 }
