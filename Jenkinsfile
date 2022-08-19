@@ -11,6 +11,11 @@ pipeline {
         git 'https://github.com/JerryGB7/e-commerce-backend-blue.git'
       } 
     }
+    stage('Build'){
+      steps{
+        sh 'mvn clean package'
+      }
+    }
     stage('stop docker containers'){
       steps{
         catchError(buildResult: 'SUCCESS'){
