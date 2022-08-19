@@ -1,5 +1,6 @@
 pipeline {
   environment {
+        PATH = "$PATH:/opt/maven/bin"
         registry = "jerrygb7/e-commerce"
         registryCredential = 'Dockerhub'
         dockerImage = ''
