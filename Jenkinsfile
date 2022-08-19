@@ -47,7 +47,7 @@ pipeline {
       steps{
         script{
           docker.withRegistry('', registryCredential){
-            sh "docker run -d -p 5001:5000 --name e-commerce-app $registry:LATEST"
+            sh "docker run -d -p 5001:5000 --name e-commerce-app $registry:$BUILD_NUMBER"
           }
         }
       }
