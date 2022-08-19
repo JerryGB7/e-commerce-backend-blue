@@ -17,6 +17,11 @@ pipeline {
         sh 'mvn clean package'
       }
     }
+    stage('Run docker daemon'){
+      steps{
+        sh 'sudo systemctl start docker'
+      }
+    }
     stage('stop docker containers'){
       steps{
         catchError(buildResult: 'SUCCESS'){
