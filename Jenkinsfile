@@ -1,142 +1,50 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: maven
-            image: maven:alpine
-            command:
-            - cat
-            tty: true
-          - name: kubectl
-            image: gcr.io/cloud-builders/kubectl
-            command:
-            - cat
-            tty: true
-          - name: trivy
-            image: aquasec/trivy:0.21.1
-            command:
-            - cat
-            tty: true
-            volumeMounts:
-             - mountPath: /var/run/docker.sock
-               name: docker-sock
-          - name: docker
-            image: docker:latest
-            command:
-            - cat
-            tty: true
-            volumeMounts:
-             - mountPath: /var/run/docker.sock
-               name: docker-sock
-          volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock
-        '''
-    }  
+  environment {
+        registry = "jerrygb7/e-commerce"
+        registryCredential = 'Dockerhub'
+        dockerImage = ''
   }
+  agent any
   stages {
-    stage('Trivy Scan: git') {
-      steps {
-        container('trivy') {
-          sh "trivy repo https://github.com/2206-devops-batch/e-commerce-backend-blue"
-        }
-      }
-    }  
-    stage('Build') {
-      steps {
-        container('maven') {
-          sh 'mvn install'
-        }
-      }
+    stage('cloning from git'){
+      steps{
+        git 'https://github.com/JerryGB7/e-commerce-backend-blue.git'
+      } 
     }
-    /**stage('Test') {
-      steps {
-        container('maven') {
-          sh 'mvn test'
+    stage('stop docker containers'){
+      steps{
+        catchError(buildResult: 'SUCCESS'){
+          sh 'docker stop e-commerce-app'
+        }
+        catchError(buildResult: 'SUCCESS'){
+          sh 'docker rm -f e-commerce-app'
         }
       }
     }
-    stage('SonarCloud analysis') {
-        steps {       
-            script {
-                nodejs(nodeJSInstallationName: 'nodejs'){ 
-                  def scannerHome = tool 'sonar scanner';             
-                  withSonarQubeEnv('SonarCloud') { 
-                    sh "${scannerHome}/bin/sonar-scanner"
-                  }
-                }
-            }
+    stage('Build the image'){
+      steps{
+        script{
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
+      }
     }
-    stage('Quality gate') {
-        steps {
-            script {
-                timeout(time: 5, unit: 'MINUTES') {
-                  waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-    } */
-    stage('Build Image') {
-       steps {
-         container('docker') {
-           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-             sh 'docker build -t othom/e-commerce-backend-blue:$BUILD_NUMBER .'
-             sh 'docker build -t othom/e-commerce-backend-green:$BUILD_NUMBER .'
+    stage('Deploy our image'){
+      steps{
+        script{
+          docker.withRegistry('', registryCredential){
+            dockerImage.push()
           }
         }
       }
     }
-    stage('Trivy Scan: image') {
-      steps {
-        container('trivy') {
-          sh "trivy image othom/e-commerce-backend-blue:$BUILD_NUMBER"
-          sh "trivy image othom/e-commerce-backend-green:$BUILD_NUMBER"
-        }
-      }
-    } 
-    stage('Deliver') {
-       steps {
-         container('docker') {
-           withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
-             sh 'docker login -u ${username} -p ${password}'
-             sh 'docker push othom/e-commerce-backend-blue:$BUILD_NUMBER'
-             sh 'docker push othom/e-commerce-backend-green:$BUILD_NUMBER'
+    stage('Run image'){
+      steps{
+        script{
+          docker.withRegistry('', registryCredential){
+            sh "docker run -d -p 5001:5000 --name e-commerce-app $registry:$BUILD_NUMBER"
           }
         }
       }
     }
-    stage('Trivy Scan: Misconfigurations') {
-      steps {
-        container('trivy') {
-          sh "trivy config ./kubectl-yaml-files"
-        }
-      }
-    }   
-    stage('Deploy') {
-      steps {
-         container('kubectl') {
-             sh 'kubectl config set-context --current --namespace=default'
-             sh 'kubectl apply -f backendbluedeployment.yaml'
-             sh 'kubectl apply -f backendgreendeployment.yaml'
-           
-         }
-        
-      }
-    }
-    
   }
-  post {
-      always {
-        container('docker') {
-          sh 'docker logout'
-        }
-      }
-  }
-    
 }
